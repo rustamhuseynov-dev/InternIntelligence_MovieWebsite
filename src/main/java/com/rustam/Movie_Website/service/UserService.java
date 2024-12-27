@@ -11,6 +11,7 @@ import com.rustam.Movie_Website.exception.custom.IncorrectPasswordException;
 import com.rustam.Movie_Website.mapper.UserMapper;
 import com.rustam.Movie_Website.util.UtilService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final UtilService utilService;
     private final UserDetailsServiceImpl userDetailsService;
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String,String> redisTemplate;
 
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
         User user = User.builder()
