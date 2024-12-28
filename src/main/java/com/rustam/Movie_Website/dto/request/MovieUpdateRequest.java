@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class MovieUpdateRequest {
+    private Long id;
     private String title;
     private String director;
     private String releaseYear;
