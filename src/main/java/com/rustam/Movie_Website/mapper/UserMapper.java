@@ -20,7 +20,7 @@ public interface UserMapper {
 
     UserRegisterResponse toResponse(User user);
 
-    UserRegisterResponse toResponses(List<User> users);
+    List<UserRegisterResponse> toResponses(List<User> users);
 
     UserUpdateResponse toUpdated(User user);
 }
