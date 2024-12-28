@@ -1,7 +1,6 @@
 package com.rustam.Movie_Website.service;
 
 import com.rustam.Movie_Website.dao.entity.Movie;
-import com.rustam.Movie_Website.dao.entity.User;
 import com.rustam.Movie_Website.dao.repository.MovieRepository;
 import com.rustam.Movie_Website.dto.request.MovieCreateRequest;
 import com.rustam.Movie_Website.dto.request.MovieUpdateRequest;
