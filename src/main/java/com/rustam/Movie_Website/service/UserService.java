@@ -4,6 +4,7 @@ import com.rustam.Movie_Website.dao.entity.User;
 import com.rustam.Movie_Website.dao.repository.UserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.dto.request.AuthRequest;
+import com.rustam.Movie_Website.dto.request.RefreshRequest;
 import com.rustam.Movie_Website.dto.request.UserRegisterRequest;
 import com.rustam.Movie_Website.dto.request.UserUpdateRequest;
 import com.rustam.Movie_Website.dto.response.AuthResponse;
@@ -15,6 +16,7 @@ import com.rustam.Movie_Website.exception.custom.IncorrectPasswordException;
 import com.rustam.Movie_Website.mapper.UserMapper;
 import com.rustam.Movie_Website.util.UtilService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +29,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -76,7 +79,7 @@ public class UserService {
         return userMapper.toResponse(user);
     }
 
-    public UserRegisterResponse readAll() {
+    public List<UserRegisterResponse> readAll() {
         List<User> users = utilService.findAll();
         return userMapper.toResponses(users);
     }
@@ -92,5 +95,9 @@ public class UserService {
         modelMapper.map(userUpdateRequest,user);
         userRepository.save(user);
         return userMapper.toUpdated(user);
+    }
+
+    public String refreshToken(RefreshRequest request) {
+        return utilService.refreshToken(request);
     }
 }
