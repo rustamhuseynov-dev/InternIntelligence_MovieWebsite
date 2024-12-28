@@ -2,6 +2,7 @@ package com.rustam.Movie_Website.exception;
 
 import com.rustam.Movie_Website.dto.exception.ExceptionResponseMessages;
 import com.rustam.Movie_Website.exception.custom.IncorrectPasswordException;
+import com.rustam.Movie_Website.exception.custom.UserNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IncorrectPasswordException.class)
     public ResponseEntity<ExceptionResponseMessages> handleIncorrectPasswordException(IncorrectPasswordException ex) {
+        return new ResponseEntity<>(
+                new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.CONFLICT),
+                HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ExceptionResponseMessages> handleIncorrectPasswordException(UserNotFoundException ex) {
         return new ResponseEntity<>(
                 new ExceptionResponseMessages(ex.getClass().getName(), ex.getMessage(), HttpStatus.CONFLICT),
                 HttpStatus.CONFLICT
