@@ -5,18 +5,25 @@ import com.rustam.Movie_Website.dao.repository.UserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.dto.request.AuthRequest;
 import com.rustam.Movie_Website.dto.request.UserRegisterRequest;
+import com.rustam.Movie_Website.dto.request.UserUpdateRequest;
 import com.rustam.Movie_Website.dto.response.AuthResponse;
+import com.rustam.Movie_Website.dto.response.UserDeletedResponse;
 import com.rustam.Movie_Website.dto.response.UserRegisterResponse;
+import com.rustam.Movie_Website.dto.response.UserUpdateResponse;
+import com.rustam.Movie_Website.exception.custom.ExistsException;
 import com.rustam.Movie_Website.exception.custom.IncorrectPasswordException;
 import com.rustam.Movie_Website.mapper.UserMapper;
 import com.rustam.Movie_Website.util.UtilService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +34,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final UtilService utilService;
     private final UserDetailsServiceImpl userDetailsService;
+    private final ModelMapper modelMapper;
     private final RedisTemplate<String,String> redisTemplate;
 
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
@@ -52,5 +60,37 @@ public class UserService {
         return AuthResponse.builder()
                 .tokenPair(tokenPair)
                 .build();
+    }
+
+    public UserDeletedResponse delete(UUID id) {
+        User user = utilService.findById(id);
+        UserDeletedResponse deletedResponse = new UserDeletedResponse();
+        modelMapper.map(user,deletedResponse);
+        deletedResponse.setText("This user was deleted by you.");
+        userRepository.delete(user);
+        return deletedResponse;
+    }
+
+    public UserRegisterResponse read(UUID id) {
+        User user = utilService.findById(id);
+        return userMapper.toResponse(user);
+    }
+
+    public UserRegisterResponse readAll() {
+        List<User> users = utilService.findAll();
+        return userMapper.toResponses(users);
+    }
+
+    public UserUpdateResponse update(UserUpdateRequest userUpdateRequest) {
+        User user = utilService.findById(userUpdateRequest.getId());
+        boolean exists = utilService.findAll().stream()
+                .map(User::getUsername)
+                .anyMatch(existingUsername -> existingUsername.equals(userUpdateRequest.getUsername()));
+        if (exists){
+            throw new ExistsException("This username is already taken.");
+        }
+        modelMapper.map(userUpdateRequest,user);
+        userRepository.save(user);
+        return userMapper.toUpdated(user);
     }
 }
