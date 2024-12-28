@@ -4,12 +4,14 @@ import com.rustam.Movie_Website.dao.entity.User;
 import com.rustam.Movie_Website.dao.repository.UserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.exception.custom.InvalidUUIDFormatException;
+import com.rustam.Movie_Website.exception.custom.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -22,7 +24,7 @@ public class UtilService {
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No such user found."));
+                .orElseThrow(() -> new UsernameNotFoundException("No such username found."));
     }
 
     public UUID convertToUUID(String id) {
@@ -41,5 +43,14 @@ public class UtilService {
                         .refreshToken(jwtUtil.createRefreshToken(String.valueOf(id)))
                         .build()
                 : new TokenPair();
+    }
+
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("No such user found."));
+    }
+
+    public List<User> findAll(){
+        return userRepository.findAll();
     }
 }
