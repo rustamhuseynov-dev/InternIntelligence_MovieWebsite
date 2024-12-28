@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class MovieController {
     }
 
     @GetMapping(path = "/read")
-    public ResponseEntity<MovieReadResponse> read(){
+    public ResponseEntity<List<MovieReadResponse>> read(){
         return new ResponseEntity<>(movieService.read(),HttpStatus.ACCEPTED);
     }
 
