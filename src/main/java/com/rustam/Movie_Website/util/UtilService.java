@@ -1,10 +1,13 @@
 package com.rustam.Movie_Website.util;
 
+import com.rustam.Movie_Website.dao.entity.Movie;
 import com.rustam.Movie_Website.dao.entity.User;
+import com.rustam.Movie_Website.dao.repository.MovieRepository;
 import com.rustam.Movie_Website.dao.repository.UserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.dto.request.RefreshRequest;
 import com.rustam.Movie_Website.exception.custom.InvalidUUIDFormatException;
+import com.rustam.Movie_Website.exception.custom.MovieNotFoundException;
 import com.rustam.Movie_Website.exception.custom.UnauthorizedException;
 import com.rustam.Movie_Website.exception.custom.UserNotFoundException;
 import com.rustam.Movie_Website.util.jwt.JwtUtil;
@@ -25,6 +28,7 @@ public class UtilService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final MovieRepository movieRepository;
     private final RedisTemplate<String,String> redisTemplate;
 
     public User findByUsername(String username) {
@@ -73,5 +77,14 @@ public class UtilService {
         } else {
             throw new UnauthorizedException("Invalid refresh token");
         }
+    }
+
+    public List<Movie> movieFindAll() {
+        return movieRepository.findAll();
+    }
+
+    public Movie movieFindById(Long id) {
+        return movieRepository.findById(id)
+                .orElseThrow(() -> new MovieNotFoundException("No such movie found."));
     }
 }
