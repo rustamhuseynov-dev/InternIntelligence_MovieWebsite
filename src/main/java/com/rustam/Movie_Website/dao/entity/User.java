@@ -28,6 +28,7 @@ public class User {
     private UUID id;
     private String name;
     private String surname;
+    @Column(unique = true)
     private String username;
     private String password;
 
