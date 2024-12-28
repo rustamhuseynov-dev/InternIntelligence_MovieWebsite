@@ -6,6 +6,7 @@ spring:
       expiration: 60000 # 1 minutes
       refresh-token:
         expiration: 604800000 # 7 days
+
     # Database
   datasource:
     url: jdbc:postgresql://localhost:5432/movie_website
@@ -27,3 +28,9 @@ spring:
 
 server:
   port: 9000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
