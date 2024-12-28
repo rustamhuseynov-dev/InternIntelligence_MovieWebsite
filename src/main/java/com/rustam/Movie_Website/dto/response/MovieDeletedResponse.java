@@ -17,4 +17,5 @@ public class MovieDeletedResponse {
     private String releaseYear;
     private String genre;
     private Double IMDb;
+    private String text;
 }
