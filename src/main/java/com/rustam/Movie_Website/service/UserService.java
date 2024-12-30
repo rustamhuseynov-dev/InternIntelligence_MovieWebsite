@@ -1,7 +1,9 @@
 package com.rustam.Movie_Website.service;
 
+import com.rustam.Movie_Website.dao.entity.Admin;
+import com.rustam.Movie_Website.dao.entity.BaseUser;
 import com.rustam.Movie_Website.dao.entity.User;
-import com.rustam.Movie_Website.dao.repository.UserRepository;
+import com.rustam.Movie_Website.dao.repository.BaseUserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.dto.request.AuthRequest;
 import com.rustam.Movie_Website.dto.request.RefreshRequest;
@@ -19,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,13 +34,13 @@ import java.util.UUID;
 @Slf4j
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final BaseUserRepository baseUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final UtilService utilService;
     private final UserDetailsServiceImpl userDetailsService;
     private final ModelMapper modelMapper;
-    private final RedisTemplate<String,String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
         User user = User.builder()
@@ -48,18 +49,18 @@ public class UserService {
                 .username(userRegisterRequest.getUsername())
                 .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
                 .build();
-        userRepository.save(user);
+        baseUserRepository.save(user);
         return userMapper.toResponse(user);
     }
 
     public AuthResponse login(AuthRequest authRequest) {
-        User user = utilService.findByUsername(authRequest.getUsername());
-        if (!passwordEncoder.matches(authRequest.getPassword(),user.getPassword())){
+        BaseUser baseUser = utilService.findByUsername(authRequest.getUsername());
+        if (!passwordEncoder.matches(authRequest.getPassword(), baseUser.getPassword())) {
             throw new IncorrectPasswordException("password does not match");
         }
-        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(user.getId()));
-        TokenPair tokenPair = utilService.tokenProvider(user.getId(), userDetails);
-        String redisKey = "refresh_token:" + user.getId();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(String.valueOf(baseUser.getId()));
+        TokenPair tokenPair = utilService.tokenProvider(baseUser.getId(), userDetails);
+        String redisKey = "refresh_token:" + baseUser.getId();
         redisTemplate.opsForValue().set(redisKey, tokenPair.getRefreshToken(), Duration.ofDays(2)); // 2 gün müddətinə saxla
         return AuthResponse.builder()
                 .tokenPair(tokenPair)
@@ -67,38 +68,45 @@ public class UserService {
     }
 
     public UserDeletedResponse delete(UUID id) {
-        User user = utilService.findById(id);
+        BaseUser baseUser = utilService.findById(id);
         String currentUsername = utilService.getCurrentUsername();
-        utilService.validation(user.getId(),currentUsername);
+        utilService.validation(baseUser.getId(), currentUsername);
         UserDeletedResponse deletedResponse = new UserDeletedResponse();
-        modelMapper.map(user,deletedResponse);
+        modelMapper.map(baseUser, deletedResponse);
         deletedResponse.setText("This user was deleted by you.");
-        userRepository.delete(user);
+        baseUserRepository.delete(baseUser);
         return deletedResponse;
     }
 
     public UserRegisterResponse read(UUID id) {
-        User user = utilService.findById(id);
-        return userMapper.toResponse(user);
+        BaseUser baseUser = utilService.findById(id);
+        return userMapper.toResponse(baseUser);
     }
 
     public List<UserRegisterResponse> readAll() {
-        List<User> users = utilService.findAll();
-        return userMapper.toResponses(users);
+        List<BaseUser> baseUsers = utilService.findAll();
+        return userMapper.toResponses(baseUsers);
     }
 
     public UserUpdateResponse update(UserUpdateRequest userUpdateRequest) {
         String currentUsername = utilService.getCurrentUsername();
-        User user = utilService.findById(userUpdateRequest.getId());
-        utilService.validation(currentUsername,user.getId());
+        BaseUser user = utilService.findById(userUpdateRequest.getId());
+        utilService.validation(currentUsername, user.getId());
         boolean exists = utilService.findAll().stream()
-                .map(User::getUsername)
+                .filter(baseUser -> baseUser instanceof User || baseUser instanceof Admin)
+                .map(baseUser -> {
+                    if (baseUser instanceof User) {
+                        return ((User) baseUser).getUsername();
+                    } else {
+                        return ((Admin) baseUser).getUsername();
+                    }
+                })
                 .anyMatch(existingUsername -> existingUsername.equals(userUpdateRequest.getUsername()));
-        if (exists){
+        if (exists) {
             throw new ExistsException("This username is already taken.");
         }
-        modelMapper.map(userUpdateRequest,user);
-        userRepository.save(user);
+        modelMapper.map(userUpdateRequest, user);
+        baseUserRepository.save(user);
         return userMapper.toUpdated(user);
     }
 
