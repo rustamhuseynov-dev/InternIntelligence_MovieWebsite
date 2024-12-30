@@ -17,5 +17,6 @@ public class UserDeletedResponse {
     private String name;
     private String surname;
     private String username;
+    private String phone;
     private String text;
 }
