@@ -6,6 +6,7 @@ import com.rustam.Movie_Website.dao.repository.MovieRepository;
 import com.rustam.Movie_Website.dao.repository.UserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.dto.request.RefreshRequest;
+import com.rustam.Movie_Website.exception.custom.NoAuthotiryException;
 import com.rustam.Movie_Website.exception.custom.InvalidUUIDFormatException;
 import com.rustam.Movie_Website.exception.custom.MovieNotFoundException;
 import com.rustam.Movie_Website.exception.custom.UnauthorizedException;
@@ -86,5 +87,11 @@ public class UtilService {
     public Movie movieFindById(Long id) {
         return movieRepository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException("No such movie found."));
+    }
+
+    public void validation(String currentUsername, String username) {
+        if (!currentUsername.equals(username)){
+            throw new NoAuthotiryException("You have no authority.");
+        }
     }
 }
