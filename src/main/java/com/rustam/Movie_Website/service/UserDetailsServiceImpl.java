@@ -3,7 +3,6 @@ package com.rustam.Movie_Website.service;
 import com.rustam.Movie_Website.dao.entity.BaseUser;
 import com.rustam.Movie_Website.dao.entity.User;
 import com.rustam.Movie_Website.dao.repository.BaseUserRepository;
-import com.rustam.Movie_Website.dao.repository.UserRepository;
 import com.rustam.Movie_Website.util.CustomUserDetails;
 import com.rustam.Movie_Website.util.UtilService;
 import lombok.RequiredArgsConstructor;
