@@ -13,6 +13,8 @@ public class UserUpdateResponse {
 
     private String name;
     private String surname;
+    private String phone;
+    private String email;
     private String username;
 
 }
