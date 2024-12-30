@@ -13,5 +13,6 @@ public class UserRegisterResponse {
 
     private String name;
     private String surname;
-    private String username;
+    private String phone;
+    private String email;
 }
