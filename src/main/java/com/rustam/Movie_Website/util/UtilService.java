@@ -1,9 +1,9 @@
 package com.rustam.Movie_Website.util;
 
+import com.rustam.Movie_Website.dao.entity.BaseUser;
 import com.rustam.Movie_Website.dao.entity.Movie;
-import com.rustam.Movie_Website.dao.entity.User;
+import com.rustam.Movie_Website.dao.repository.BaseUserRepository;
 import com.rustam.Movie_Website.dao.repository.MovieRepository;
-import com.rustam.Movie_Website.dao.repository.UserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.dto.request.RefreshRequest;
 import com.rustam.Movie_Website.exception.custom.NoAuthotiryException;
@@ -29,13 +29,13 @@ import java.util.UUID;
 @Slf4j
 public class UtilService {
 
-    private final UserRepository userRepository;
+    private final BaseUserRepository baseUserRepository;
     private final JwtUtil jwtUtil;
     private final MovieRepository movieRepository;
     private final RedisTemplate<String,String> redisTemplate;
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public BaseUser findByUsername(String username) {
+        return baseUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No such username found."));
     }
 
@@ -57,13 +57,13 @@ public class UtilService {
                 : new TokenPair();
     }
 
-    public User findById(UUID id) {
-        return userRepository.findById(id)
+    public BaseUser findById(UUID id) {
+        return baseUserRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("No such user found."));
     }
 
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public List<BaseUser> findAll(){
+        return baseUserRepository.findAll();
     }
 
     public String refreshToken(RefreshRequest request) {
