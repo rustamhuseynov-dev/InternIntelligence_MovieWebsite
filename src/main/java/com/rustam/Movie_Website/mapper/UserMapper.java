@@ -1,5 +1,6 @@
 package com.rustam.Movie_Website.mapper;
 
+import com.rustam.Movie_Website.dao.entity.BaseUser;
 import com.rustam.Movie_Website.dao.entity.User;
 import com.rustam.Movie_Website.dto.response.UserRegisterResponse;
 import com.rustam.Movie_Website.dto.response.UserUpdateResponse;
@@ -18,9 +19,9 @@ import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 )
 public interface UserMapper {
 
-    UserRegisterResponse toResponse(User user);
+    UserRegisterResponse toResponse(BaseUser baseUser);
 
-    List<UserRegisterResponse> toResponses(List<User> users);
+    List<UserRegisterResponse> toResponses(List<BaseUser> baseUsers);
 
-    UserUpdateResponse toUpdated(User user);
+    UserUpdateResponse toUpdated(BaseUser baseUser);
 }
