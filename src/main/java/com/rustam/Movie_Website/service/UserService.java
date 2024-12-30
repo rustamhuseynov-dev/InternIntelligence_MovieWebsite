@@ -68,6 +68,8 @@ public class UserService {
 
     public UserDeletedResponse delete(UUID id) {
         User user = utilService.findById(id);
+        String currentUsername = utilService.getCurrentUsername();
+        utilService.validation(user.getId(),currentUsername);
         UserDeletedResponse deletedResponse = new UserDeletedResponse();
         modelMapper.map(user,deletedResponse);
         deletedResponse.setText("This user was deleted by you.");
@@ -86,7 +88,7 @@ public class UserService {
     }
 
     public UserUpdateResponse update(UserUpdateRequest userUpdateRequest) {
-        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        String currentUsername = utilService.getCurrentUsername();
         User user = utilService.findById(userUpdateRequest.getId());
         utilService.validation(currentUsername,user.getId());
         boolean exists = utilService.findAll().stream()
