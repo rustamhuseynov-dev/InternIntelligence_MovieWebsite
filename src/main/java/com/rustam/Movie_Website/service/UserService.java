@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -85,7 +86,9 @@ public class UserService {
     }
 
     public UserUpdateResponse update(UserUpdateRequest userUpdateRequest) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = utilService.findById(userUpdateRequest.getId());
+        utilService.validation(currentUsername,user.getId());
         boolean exists = utilService.findAll().stream()
                 .map(User::getUsername)
                 .anyMatch(existingUsername -> existingUsername.equals(userUpdateRequest.getUsername()));
