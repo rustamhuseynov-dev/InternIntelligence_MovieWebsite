@@ -3,6 +3,7 @@ package com.rustam.Movie_Website.service;
 import com.rustam.Movie_Website.dao.entity.Admin;
 import com.rustam.Movie_Website.dao.entity.BaseUser;
 import com.rustam.Movie_Website.dao.entity.User;
+import com.rustam.Movie_Website.dao.enums.Role;
 import com.rustam.Movie_Website.dao.repository.BaseUserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
 import com.rustam.Movie_Website.dto.request.AuthRequest;
@@ -26,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,14 +45,18 @@ public class UserService {
     private final RedisTemplate<String, String> redisTemplate;
 
     public UserRegisterResponse register(UserRegisterRequest userRegisterRequest) {
-        User user = User.builder()
+        BaseUser baseUser = User.builder()
                 .name(userRegisterRequest.getName())
                 .surname(userRegisterRequest.getSurname())
+                .phone(userRegisterRequest.getPhone())
+                .email(userRegisterRequest.getEmail())
                 .username(userRegisterRequest.getUsername())
                 .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
+                .authorities(Collections.singleton(Role.USER))
+                .enabled(true)
                 .build();
-        baseUserRepository.save(user);
-        return userMapper.toResponse(user);
+        baseUserRepository.save(baseUser);
+        return userMapper.toResponse(baseUser);
     }
 
     public AuthResponse login(AuthRequest authRequest) {
