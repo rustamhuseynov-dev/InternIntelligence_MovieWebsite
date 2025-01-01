@@ -15,6 +15,5 @@ public class UserUpdateResponse {
     private String surname;
     private String phone;
     private String email;
-    private String username;
 
 }
