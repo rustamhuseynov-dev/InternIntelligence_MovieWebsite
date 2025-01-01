@@ -1,5 +1,6 @@
 package com.rustam.Movie_Website.config;
 
+import com.rustam.Movie_Website.dao.enums.Role;
 import com.rustam.Movie_Website.util.jwt.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/swagger-ui.html/**"
                                 ).permitAll()
+                                .requestMatchers("/api/v1/user/register-admin").hasRole(Role.REQUEST_ADMIN.getValue())
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
