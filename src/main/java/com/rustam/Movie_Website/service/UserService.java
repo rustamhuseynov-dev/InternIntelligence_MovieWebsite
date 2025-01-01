@@ -15,11 +15,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -106,11 +108,20 @@ public class UserService {
         return utilService.refreshToken(request);
     }
 
-    public AdminRegisterResponse registerAdmin(AdminRegisterRequest adminRegisterRequest) {
-        BaseUser user = utilService.findByUsername(adminRegisterRequest.getUsername());
+    public AdminRegisterResponse forAdmin(AdminRegisterRequest adminRegisterRequest) {
+        User user = (User) utilService.findByUsername(adminRegisterRequest.getUsername());
         user.setAuthorities(Collections.singleton(Role.ADMIN));
-        log.info("role {}",user.getAuthorities());
+        user.setIban(utilService.generateIbanForUser());
+        user.setStartDay(LocalDate.now());
         baseUserRepository.save(user);
         return userMapper.toAdminResponse(user);
+    }
+
+    public String selectToBeAdmin(SelectToBeRequest selectToBeRequest) {
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        BaseUser user = utilService.findByUsername(selectToBeRequest.getUsername());
+        user.setAuthorities(Collections.singleton(Role.REQUEST_ADMIN));
+        baseUserRepository.save(user);
+        return "You can now apply to become an admin.";
     }
 }
