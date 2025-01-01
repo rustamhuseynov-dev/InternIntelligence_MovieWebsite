@@ -117,4 +117,16 @@ public class UtilService {
 
         return countryCode + checkDigits + uniqueAccountPart;
     }
+
+    public String logoutUser(String refreshToken) {
+        String userId = jwtUtil.getUserIdAsUsernameFromToken(refreshToken);
+        String redisKey = "refresh_token:" + userId;
+        Boolean delete = redisTemplate.delete(redisKey);
+        if (Boolean.TRUE.equals(delete)){
+            return "The refresh token was deleted and the user was logged out.";
+        }
+        else {
+            throw new UnauthorizedException("An error occurred while logging out.");
+        }
+    }
 }
