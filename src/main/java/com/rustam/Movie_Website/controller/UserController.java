@@ -1,9 +1,6 @@
 package com.rustam.Movie_Website.controller;
 
-import com.rustam.Movie_Website.dto.request.AdminRegisterRequest;
-import com.rustam.Movie_Website.dto.request.AuthRequest;
-import com.rustam.Movie_Website.dto.request.UserRegisterRequest;
-import com.rustam.Movie_Website.dto.request.UserUpdateRequest;
+import com.rustam.Movie_Website.dto.request.*;
 import com.rustam.Movie_Website.dto.response.*;
 import com.rustam.Movie_Website.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +24,13 @@ public class UserController {
     }
 
     @PutMapping(path = "/for-admin")
-    public ResponseEntity<AdminRegisterResponse> register(@RequestBody AdminRegisterRequest adminRegisterRequest){
-        return new ResponseEntity<>(userService.registerAdmin(adminRegisterRequest), HttpStatus.CREATED);
+    public ResponseEntity<AdminRegisterResponse> forAdmin(@RequestBody AdminRegisterRequest adminRegisterRequest){
+        return new ResponseEntity<>(userService.forAdmin(adminRegisterRequest), HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "select-to-be-admin")
+    public ResponseEntity<String> selectToBeAdmin(@RequestBody SelectToBeRequest selectToBeRequest){
+        return new ResponseEntity<>(userService.selectToBeAdmin(selectToBeRequest),HttpStatus.ACCEPTED);
     }
 
     @PostMapping(path = "/login")
