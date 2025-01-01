@@ -38,7 +38,8 @@ public class SecurityConfig {
                                         "/swagger-ui/**",
                                         "/swagger-ui.html/**"
                                 ).permitAll()
-                                .requestMatchers("/api/v1/user/register-admin").hasRole(Role.REQUEST_ADMIN.getValue())
+                                .requestMatchers("/api/v1/user/for-admin").hasAuthority(Role.REQUEST_ADMIN.getValue())
+                                .requestMatchers("/api/v1/user/select-to-be-admin").hasAuthority(Role.ADMIN.getValue())
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
