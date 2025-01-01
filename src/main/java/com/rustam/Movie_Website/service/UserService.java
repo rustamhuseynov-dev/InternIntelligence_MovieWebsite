@@ -1,19 +1,12 @@
 package com.rustam.Movie_Website.service;
 
-import com.rustam.Movie_Website.dao.entity.Admin;
 import com.rustam.Movie_Website.dao.entity.BaseUser;
 import com.rustam.Movie_Website.dao.entity.User;
 import com.rustam.Movie_Website.dao.enums.Role;
 import com.rustam.Movie_Website.dao.repository.BaseUserRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
-import com.rustam.Movie_Website.dto.request.AuthRequest;
-import com.rustam.Movie_Website.dto.request.RefreshRequest;
-import com.rustam.Movie_Website.dto.request.UserRegisterRequest;
-import com.rustam.Movie_Website.dto.request.UserUpdateRequest;
-import com.rustam.Movie_Website.dto.response.AuthResponse;
-import com.rustam.Movie_Website.dto.response.UserDeletedResponse;
-import com.rustam.Movie_Website.dto.response.UserRegisterResponse;
-import com.rustam.Movie_Website.dto.response.UserUpdateResponse;
+import com.rustam.Movie_Website.dto.request.*;
+import com.rustam.Movie_Website.dto.response.*;
 import com.rustam.Movie_Website.exception.custom.ExistsException;
 import com.rustam.Movie_Website.exception.custom.IncorrectPasswordException;
 import com.rustam.Movie_Website.mapper.UserMapper;
@@ -98,15 +91,8 @@ public class UserService {
         String currentUsername = utilService.getCurrentUsername();
         BaseUser user = utilService.findById(userUpdateRequest.getId());
         utilService.validation(currentUsername, user.getId());
-        boolean exists = utilService.findAll().stream()
-                .filter(baseUser -> baseUser instanceof User || baseUser instanceof Admin)
-                .map(baseUser -> {
-                    if (baseUser instanceof User) {
-                        return ((User) baseUser).getUsername();
-                    } else {
-                        return ((Admin) baseUser).getUsername();
-                    }
-                })
+        boolean exists = utilService.findAllBy().stream()
+                .map(User::getUsername)
                 .anyMatch(existingUsername -> existingUsername.equals(userUpdateRequest.getUsername()));
         if (exists) {
             throw new ExistsException("This username is already taken.");
@@ -118,5 +104,13 @@ public class UserService {
 
     public String refreshToken(RefreshRequest request) {
         return utilService.refreshToken(request);
+    }
+
+    public AdminRegisterResponse registerAdmin(AdminRegisterRequest adminRegisterRequest) {
+        BaseUser user = utilService.findByUsername(adminRegisterRequest.getUsername());
+        user.setAuthorities(Collections.singleton(Role.ADMIN));
+        log.info("role {}",user.getAuthorities());
+        baseUserRepository.save(user);
+        return userMapper.toAdminResponse(user);
     }
 }
