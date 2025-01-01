@@ -76,4 +76,4 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/InternIntelligence_MovieWebsite:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/movie_website:latest
