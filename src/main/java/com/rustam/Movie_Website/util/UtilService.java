@@ -2,6 +2,7 @@ package com.rustam.Movie_Website.util;
 
 import com.rustam.Movie_Website.dao.entity.BaseUser;
 import com.rustam.Movie_Website.dao.entity.Movie;
+import com.rustam.Movie_Website.dao.entity.User;
 import com.rustam.Movie_Website.dao.repository.BaseUserRepository;
 import com.rustam.Movie_Website.dao.repository.MovieRepository;
 import com.rustam.Movie_Website.dto.TokenPair;
@@ -64,6 +65,10 @@ public class UtilService {
 
     public List<BaseUser> findAll(){
         return baseUserRepository.findAll();
+    }
+
+    public List<User> findAllBy(){
+        return baseUserRepository.findAllBy();
     }
 
     public String refreshToken(RefreshRequest request) {
