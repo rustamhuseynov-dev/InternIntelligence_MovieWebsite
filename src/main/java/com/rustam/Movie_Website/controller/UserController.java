@@ -57,4 +57,9 @@ public class UserController {
     public ResponseEntity<UserDeletedResponse> delete(@PathVariable UUID id){
         return new ResponseEntity<>(userService.delete(id),HttpStatus.ACCEPTED);
     }
+
+    @DeleteMapping(path = "/logout")
+    public ResponseEntity<String> logout(@RequestBody RefreshRequest refreshRequest){
+        return new ResponseEntity<>(userService.logout(refreshRequest),HttpStatus.ACCEPTED);
+    }
 }

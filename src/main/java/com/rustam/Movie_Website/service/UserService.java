@@ -9,6 +9,7 @@ import com.rustam.Movie_Website.dto.request.*;
 import com.rustam.Movie_Website.dto.response.*;
 import com.rustam.Movie_Website.exception.custom.ExistsException;
 import com.rustam.Movie_Website.exception.custom.IncorrectPasswordException;
+import com.rustam.Movie_Website.exception.custom.UnauthorizedException;
 import com.rustam.Movie_Website.mapper.UserMapper;
 import com.rustam.Movie_Website.util.UtilService;
 import lombok.RequiredArgsConstructor;
@@ -123,5 +124,9 @@ public class UserService {
         user.setAuthorities(Collections.singleton(Role.REQUEST_ADMIN));
         baseUserRepository.save(user);
         return "You can now apply to become an admin.";
+    }
+
+    public String logout(RefreshRequest refreshRequest) {
+        return utilService.logoutUser(refreshRequest.getRefreshToken());
     }
 }

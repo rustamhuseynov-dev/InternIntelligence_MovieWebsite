@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping(path = "/api/v1/movie")
 @RequiredArgsConstructor
 public class MovieController {
 
