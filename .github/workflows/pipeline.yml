@@ -1,4 +1,4 @@
-name: CI/CD with
+name: CI/CD InternIntelligence_MovieWebsite
 
 on:
   push:
