@@ -40,6 +40,7 @@ public class SecurityConfig {
                                 ).permitAll()
                                 .requestMatchers("/api/v1/user/for-admin").hasAuthority(Role.REQUEST_ADMIN.getValue())
                                 .requestMatchers("/api/v1/user/select-to-be-admin").hasAuthority(Role.ADMIN.getValue())
+                                .requestMatchers("api/v1/movie/**").hasAuthority(Role.ADMIN.getValue())
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(x -> x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
