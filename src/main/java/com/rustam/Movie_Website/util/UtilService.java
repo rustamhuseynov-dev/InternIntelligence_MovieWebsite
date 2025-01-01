@@ -109,4 +109,12 @@ public class UtilService {
         }
         return null;
     }
+
+    public String generateIbanForUser() {
+        String countryCode = "AZ";
+        String checkDigits = "00";
+        String uniqueAccountPart = UUID.randomUUID().toString().replace("-", "").substring(0, 22);
+
+        return countryCode + checkDigits + uniqueAccountPart;
+    }
 }
