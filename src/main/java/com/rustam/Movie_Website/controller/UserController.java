@@ -1,12 +1,10 @@
 package com.rustam.Movie_Website.controller;
 
+import com.rustam.Movie_Website.dto.request.AdminRegisterRequest;
 import com.rustam.Movie_Website.dto.request.AuthRequest;
 import com.rustam.Movie_Website.dto.request.UserRegisterRequest;
 import com.rustam.Movie_Website.dto.request.UserUpdateRequest;
-import com.rustam.Movie_Website.dto.response.AuthResponse;
-import com.rustam.Movie_Website.dto.response.UserDeletedResponse;
-import com.rustam.Movie_Website.dto.response.UserRegisterResponse;
-import com.rustam.Movie_Website.dto.response.UserUpdateResponse;
+import com.rustam.Movie_Website.dto.response.*;
 import com.rustam.Movie_Website.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +24,11 @@ public class UserController {
     @PostMapping(path = "/register")
     public ResponseEntity<UserRegisterResponse> register(@RequestBody UserRegisterRequest userRegisterRequest){
         return new ResponseEntity<>(userService.register(userRegisterRequest), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/for-admin")
+    public ResponseEntity<AdminRegisterResponse> register(@RequestBody AdminRegisterRequest adminRegisterRequest){
+        return new ResponseEntity<>(userService.registerAdmin(adminRegisterRequest), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login")
