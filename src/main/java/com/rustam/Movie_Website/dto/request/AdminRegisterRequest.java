@@ -1,5 +1,6 @@
 package com.rustam.Movie_Website.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +15,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class AdminRegisterRequest {
+    @NotBlank(message = "The username column cannot be empty.")
     private String username;
 }
